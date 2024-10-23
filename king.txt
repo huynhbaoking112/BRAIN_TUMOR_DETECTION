@@ -1,0 +1,82 @@
+Trong việc sử dụng mô hình YOLO (You Only Look Once) để huấn luyện mạng neural cho nhiệm vụ nhận dạng và phát hiện đối tượng, ba thư mục train, val, và test có vai trò như sau:
+
+Ý nghĩa của các thư mục:
+train (training set):
+
+Chứa tập dữ liệu dùng để huấn luyện mô hình. Các hình ảnh và nhãn tương ứng (thường ở định dạng txt hoặc xml với tọa độ bounding box) được sử dụng để mô hình học cách phát hiện và phân loại đối tượng.
+Đây là dữ liệu mà mô hình nhìn thấy và học từ đó để tối ưu các tham số trong quá trình huấn luyện.
+val (validation set):
+
+Chứa tập dữ liệu dùng để đánh giá mô hình trong quá trình huấn luyện. Không được sử dụng để cập nhật các tham số của mô hình mà chỉ để kiểm tra xem mô hình đang học tốt như thế nào.
+Dữ liệu này giúp phát hiện tình trạng overfitting (mô hình học quá chi tiết vào dữ liệu huấn luyện mà không tổng quát hóa tốt cho dữ liệu mới).
+test (testing set):
+
+Chứa tập dữ liệu dùng để kiểm tra hiệu năng của mô hình sau khi đã huấn luyện xong. Tập dữ liệu này chưa được mô hình nhìn thấy trong quá trình huấn luyện và xác nhận.
+Đánh giá trên dữ liệu test cho ta cái nhìn khách quan về khả năng tổng quát của mô hình.
+Sự khác biệt giữa các mô hình như YOLOv8n và các mô hình khác:
+YOLO có nhiều phiên bản khác nhau, mỗi phiên bản đều có các cải tiến về kiến trúc mạng và độ chính xác. Trong YOLOv8, các phiên bản nhỏ hơn thường có hậu tố n, s, m, l, x, đại diện cho:
+
+n (nano): Nhẹ nhất và nhanh nhất, phù hợp với thiết bị có tài nguyên hạn chế, chẳng hạn như thiết bị nhúng hoặc điện thoại di động.
+s (small): Nhỏ hơn so với mô hình trung bình, phù hợp cho các ứng dụng cần tốc độ xử lý nhanh hơn.
+m (medium): Kích thước trung bình, có độ cân bằng giữa độ chính xác và tốc độ.
+l (large): Lớn hơn, phù hợp với việc huấn luyện trên các bộ dữ liệu lớn và yêu cầu độ chính xác cao hơn.
+x (extra large): Lớn nhất và chính xác nhất, nhưng cũng yêu cầu tài nguyên tính toán nhiều nhất.
+
+---------------------------------------------------------------------
+Cách hoạt động của tập validation:
+Khi bạn huấn luyện một mô hình, dữ liệu được chia ra thành các tập khác nhau: training set để mô hình học, và validation set để đánh giá.
+Sau mỗi "epoch" (một vòng lặp toàn bộ qua dữ liệu huấn luyện), mô hình sẽ được kiểm tra trên validation set.
+Trong quá trình kiểm tra này, mô hình sử dụng các tham số đã học được từ dữ liệu huấn luyện để dự đoán các kết quả trên tập validation. Sau đó, các kết quả này được so sánh với nhãn đúng (ground truth) để tính toán độ chính xác (accuracy), độ lỗi (loss), hoặc các chỉ số khác như mAP (mean Average Precision) đối với bài toán phát hiện đối tượng.
+Quan trọng: Tập validation không được dùng để cập nhật các tham số của mô hình, mà chỉ để đánh giá hiệu suất. Việc này giúp xác định xem mô hình đang học tốt như thế nào từ dữ liệu huấn luyện.
+Ý nghĩa của tập validation:
+Giúp phát hiện overfitting:
+Nếu mô hình đạt độ chính xác rất cao trên tập huấn luyện nhưng lại có hiệu suất thấp trên tập validation, điều đó có thể là dấu hiệu của overfitting. Điều này nghĩa là mô hình học quá chi tiết từ dữ liệu huấn luyện, không thể tổng quát hóa tốt cho dữ liệu mới.
+Điều chỉnh siêu tham số:
+Tập validation giúp bạn điều chỉnh các siêu tham số của mô hình như learning rate, số lượng epoch, kích thước batch, hoặc các thông số khác mà không sử dụng trực tiếp vào quá trình huấn luyện.
+Theo dõi hiệu suất của mô hình:
+Trong quá trình huấn luyện, nếu độ lỗi trên tập validation không giảm hoặc bắt đầu tăng, có thể là mô hình đã đạt đến điểm "bão hòa" trong việc học và nên dừng lại để tránh overfitting.
+Chọn mô hình tốt nhất:
+Khi huấn luyện xong, bạn có thể chọn mô hình có hiệu suất tốt nhất trên tập validation, vì đó là mô hình có khả năng tổng quát hóa tốt cho dữ liệu mà nó chưa thấy.
+Tóm lại, tập validation đóng vai trò như một chỉ báo để đánh giá hiệu suất mô hình trong suốt quá trình huấn luyện và giúp tránh các vấn đề như overfitting, đồng thời hỗ trợ điều chỉnh các tham số để cải thiện kết quả.
+---------------------------------------------------------------------
+Deep learning và machine learning đều là các lĩnh vực trong trí tuệ nhân tạo (AI), nhưng chúng có những điểm khác biệt chính về phương pháp, ứng dụng và cấu trúc của các mô hình.
+
+### 1. **Machine Learning (ML)**:
+- **Khái niệm**: Là một lĩnh vực con của AI, nơi các thuật toán học từ dữ liệu để đưa ra dự đoán hoặc quyết định mà không cần lập trình cụ thể cho từng nhiệm vụ.
+- **Phương pháp**: ML thường sử dụng các thuật toán như hồi quy tuyến tính, hồi quy logistic, cây quyết định, k-nearest neighbors, SVM (Support Vector Machines), v.v. Các thuật toán này dựa vào các đặc trưng (features) do con người tạo ra từ dữ liệu.
+- **Quá trình xử lý dữ liệu**:
+  - Dữ liệu thường được tiền xử lý thủ công. Kỹ sư cần chọn lọc và trích xuất các đặc trưng quan trọng từ dữ liệu.
+  - Các mô hình ML truyền thống yêu cầu nhiều bước tiền xử lý như chuẩn hóa, giảm số chiều hoặc phân cụm dữ liệu.
+- **Ưu điểm và nhược điểm**:
+  - Ưu điểm: Đơn giản, dễ hiểu, yêu cầu ít tài nguyên tính toán hơn.
+  - Nhược điểm: Độ chính xác không cao trong các bài toán phức tạp và yêu cầu tiền xử lý dữ liệu phức tạp.
+
+### 2. **Deep Learning (DL)**:
+- **Khái niệm**: Là một lĩnh vực con của machine learning, sử dụng các mạng neural sâu (deep neural networks) để tự động học đặc trưng từ dữ liệu. Độ sâu ở đây chỉ số lượng các lớp ẩn trong mạng neural.
+- **Phương pháp**: Deep learning sử dụng các mạng neural phức tạp với nhiều lớp ẩn để tự động học các đặc trưng và biểu diễn từ dữ liệu thô (raw data), ví dụ như hình ảnh, âm thanh, hoặc văn bản. Một số loại mạng neural phổ biến:
+  - **Convolutional Neural Networks (CNNs)**: Thường dùng cho nhận diện hình ảnh và video.
+  - **Recurrent Neural Networks (RNNs)**: Dùng cho xử lý chuỗi thời gian và ngôn ngữ tự nhiên.
+  - **Transformers**: Được sử dụng cho các bài toán xử lý ngôn ngữ tự nhiên hiện đại.
+- **Quá trình xử lý dữ liệu**:
+  - Deep learning ít cần tiền xử lý thủ công hơn vì các mạng neural tự động học các đặc trưng từ dữ liệu.
+  - Yêu cầu lượng lớn dữ liệu để đạt được hiệu suất cao.
+- **Ưu điểm và nhược điểm**:
+  - Ưu điểm: Có thể xử lý dữ liệu phức tạp như hình ảnh, âm thanh, và văn bản mà không cần trích xuất đặc trưng thủ công.
+  - Nhược điểm: Cần nhiều tài nguyên tính toán (GPU/TPU), cần lượng lớn dữ liệu, thời gian huấn luyện dài.
+
+### 3. **Sự khác biệt chính giữa Machine Learning và Deep Learning**:
+- **Cách tiếp cận**:
+  - **Machine learning**: Cần sự can thiệp của con người trong việc chọn lọc đặc trưng và tiền xử lý dữ liệu.
+  - **Deep learning**: Tự động học đặc trưng từ dữ liệu thô, giảm nhu cầu về tiền xử lý.
+- **Yêu cầu về dữ liệu**:
+  - **Machine learning**: Thường hoạt động tốt với dữ liệu ít hơn so với deep learning.
+  - **Deep learning**: Đòi hỏi lượng lớn dữ liệu để đạt được hiệu quả tốt.
+- **Yêu cầu về phần cứng**:
+  - **Machine learning**: Có thể chạy trên máy tính thông thường mà không cần GPU.
+  - **Deep learning**: Thường yêu cầu GPU hoặc TPU để xử lý tính toán phức tạp.
+- **Ứng dụng**:
+  - **Machine learning**: Thường dùng cho các bài toán đơn giản như dự đoán, phân loại văn bản, hoặc phân cụm.
+  - **Deep learning**: Được ứng dụng rộng rãi trong các bài toán phức tạp như nhận dạng giọng nói, xử lý ngôn ngữ tự nhiên, phát hiện đối tượng, và chơi game tự động.
+
+Tóm lại, deep learning là một phần mở rộng mạnh mẽ của machine learning, giúp giải quyết những bài toán phức tạp hơn thông qua việc học đặc trưng từ dữ liệu mà không cần can thiệp thủ công nhiều.
+---------------------------------------------------------------------
